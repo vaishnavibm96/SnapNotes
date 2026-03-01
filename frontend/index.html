@@ -544,6 +544,10 @@
             .modal-grid { grid-template-columns: 1fr; }
             .report-detail { grid-template-columns: 1fr; }
         }
+        .modal-questions h4 { color: #0891b2; }
+        .modal-solutions h4 { color: #16a34a; }
+        .detail-questions h4 { color: #0891b2; }
+        .detail-solutions h4 { color: #16a34a; }
     </style>
 </head>
 <body>
@@ -671,6 +675,15 @@
                 <h4>💡 Key Points</h4>
                 <ul>${renderItems(data.points)}</ul>
             </div>
+            <div class="modal-card modal-questions">
+                <h4>❓ Questions</h4>
+                <ul>${renderItems(data.questions)}</ul>
+            </div>
+            <div class="modal-card modal-solutions">
+                <h4>🧮 Solutions</h4>
+                <ul>${renderItems(data.solutions)}</ul>
+            </div>
+            
         `;
         modalOverlay.classList.add('open');
     }
@@ -741,10 +754,12 @@
                         <span class="expand-icon" id="icon-${item.id}">▼</span>
                     </div>
                     <div class="report-detail" id="detail-${item.id}">
-                        <div class="detail-card detail-notes"><h4>📝 Notes</h4><ul>${renderItems(item.notes)}</ul></div>
-                        <div class="detail-card detail-tasks"><h4>✅ Tasks</h4><ul>${renderItems(item.tasks)}</ul></div>
-                        <div class="detail-card detail-reminders"><h4>🔔 Reminders</h4><ul>${renderItems(item.reminders)}</ul></div>
-                        <div class="detail-card detail-points"><h4>💡 Key Points</h4><ul>${renderItems(item.points)}</ul></div>
+                       <div class="detail-card detail-notes"><h4>📝 Notes</h4><ul>${renderItems(item.notes)}</ul></div>
+                       <div class="detail-card detail-tasks"><h4>✅ Tasks</h4><ul>${renderItems(item.tasks)}</ul></div>
+                       <div class="detail-card detail-reminders"><h4>🔔 Reminders</h4><ul>${renderItems(item.reminders)}</ul></div>
+                       <div class="detail-card detail-points"><h4>💡 Key Points</h4><ul>${renderItems(item.points)}</ul></div>
+                       <div class="detail-card detail-questions"><h4>❓ Questions</h4><ul>${renderItems(item.questions)}</ul></div>
+                       <div class="detail-card detail-solutions"><h4>🧮 Solutions</h4><ul>${renderItems(item.solutions)}</ul></div>
                     </div>
                 `;
                 container.appendChild(div);

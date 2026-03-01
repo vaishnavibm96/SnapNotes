@@ -21,13 +21,15 @@ def init_db():
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS analyses (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            filename TEXT,
-            notes TEXT,
-            tasks TEXT,
-            reminders TEXT,
-            points TEXT,
-            created_at TEXT
+             id INTEGER PRIMARY KEY AUTOINCREMENT,
+             filename TEXT,
+             notes TEXT,
+             tasks TEXT,
+             reminders TEXT,
+             points TEXT,
+             questions TEXT,
+             solutions TEXT,
+             created_at TEXT
         )
     ''')
     conn.commit()
@@ -61,13 +63,18 @@ def analyze():
                         {
                             "type": "text",
                             "text": """Analyze this screenshot and extract the following in JSON format:
-{
-  "notes": ["key information or context from the screenshot"],
-  "tasks": ["actionable items or things to do"],
-  "reminders": ["time-sensitive items or deadlines"],
-  "points": ["important highlights or takeaways"]
-}
-Only return valid JSON, nothing else."""
+                                   {
+                                        "notes": ["only key information, facts or context from the screenshot - do NOT include questions here"],
+                                        "tasks": ["actionable items or things to do"],
+                                        "reminders": ["time-sensitive items or deadlines"],
+                                        "points": ["important highlights or takeaways"],
+                                        "questions": ["every question found in the screenshot, exactly as written"],
+                                        "solutions": ["for each question found, provide a clear and complete answer. For math problems show step by step solution. For general knowledge questions give a direct answer"]
+                                    }
+                                    Important rules:
+                                    - If something is a question, put it in questions NOT in notes
+                                    - Every question must have a corresponding solution
+                                    - Only return valid JSON, nothing else."""
                         }
                     ]
                 }
@@ -86,14 +93,16 @@ Only return valid JSON, nothing else."""
         conn = sqlite3.connect("notes.db")
         cursor = conn.cursor()
         cursor.execute('''
-            INSERT INTO analyses (filename, notes, tasks, reminders, points, created_at)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO analyses (filename, notes, tasks, reminders, points, questions, solutions, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             filename,
             json.dumps(result.get("notes", [])),
             json.dumps(result.get("tasks", [])),
             json.dumps(result.get("reminders", [])),
             json.dumps(result.get("points", [])),
+            json.dumps(result.get("questions", [])),
+            json.dumps(result.get("solutions", [])),
             datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         ))
         conn.commit()
@@ -123,7 +132,9 @@ def history():
                 "tasks": json.loads(row[3]),
                 "reminders": json.loads(row[4]),
                 "points": json.loads(row[5]),
-                "created_at": row[6]
+                "questions": json.loads(row[6]),
+                "solutions": json.loads(row[7]),
+                "created_at": row[8]
             })
 
         return jsonify(results)
